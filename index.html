@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prisma ORM - සම්පූර්ණ මාර්ගෝපදේශය</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f13;
+    --bg2: #16161d;
+    --bg3: #1e1e28;
+    --bg4: #252532;
+    --card: #1a1a24;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8e8f0;
+    --text2: #a0a0b8;
+    --text3: #6868888;
+    --accent: #7c6af7;
+    --accent2: #a78bfa;
+    --accent3: #c4b5fd;
+    --green: #4ade80;
+    --green2: #22c55e;
+    --cyan: #22d3ee;
+    --cyan2: #67e8f9;
+    --orange: #fb923c;
+    --pink: #f472b6;
+    --yellow: #facc15;
+    --red: #f87171;
+    --teal: #2dd4bf;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', 'Noto Sans Sinhala', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #0f0f13 0%, #1a1230 50%, #0f1a2e 100%);
+    border-bottom: 1px solid var(--border2);
+    padding: 60px 40px 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(124,106,247,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(124,106,247,0.15);
+    border: 1px solid rgba(124,106,247,0.3);
+    color: var(--accent3);
+    padding: 6px 16px;
+    border-radius: 99px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 {
+    font-family: 'Noto Sans Sinhala', 'Inter', sans-serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 700;
+    background: linear-gradient(135deg, #fff 0%, var(--accent3) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+
+  .hero p {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    color: var(--text2);
+    font-size: 16px;
+    max-width: 600px;
+    margin: 0 auto 32px;
+  }
+
+  .hero-stats {
+    display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-size: 28px; font-weight: 700; color: var(--accent2);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 13px; color: var(--text2);
+    font-family: 'Noto Sans Sinhala', sans-serif;
+  }
+
+  .nav {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex; gap: 0;
+    overflow-x: auto;
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .nav-btn {
+    background: none; border: none;
+    color: var(--text2);
+    padding: 16px 20px;
+    font-size: 14px; font-weight: 500;
+    font-family: 'Noto Sans Sinhala', 'Inter', sans-serif;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active { color: var(--accent2); border-bottom-color: var(--accent2); }
+
+  .content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  .section-header {
+    margin-bottom: 32px;
+  }
+
+  .section-title {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    font-size: 28px; font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .section-title .icon {
+    width: 36px; height: 36px;
+    background: rgba(124,106,247,0.15);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+
+  .section-desc {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    color: var(--text2);
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin: 24px 0;
+  }
+
+  @media (max-width: 700px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .hero { padding: 40px 20px 36px; }
+    .content { padding: 24px 20px 60px; }
+    .nav { padding: 0 16px; }
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+
+  .card-title {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    font-size: 16px; font-weight: 600;
+    color: var(--text);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .card-text {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    color: var(--text2);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .highlight-box {
+    background: rgba(124,106,247,0.08);
+    border: 1px solid rgba(124,106,247,0.25);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin: 20px 0;
+  }
+
+  .highlight-box p {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    color: var(--accent3);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .info-box {
+    background: rgba(34,211,238,0.06);
+    border: 1px solid rgba(34,211,238,0.2);
+    border-left: 4px solid var(--cyan);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin: 20px 0;
+  }
+
+  .info-box p {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    color: var(--cyan2);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .warn-box {
+    background: rgba(251,146,60,0.06);
+    border: 1px solid rgba(251,146,60,0.2);
+    border-left: 4px solid var(--orange);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin: 20px 0;
+  }
+
+  .warn-box p {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    color: #fbd38d;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .success-box {
+    background: rgba(74,222,128,0.06);
+    border: 1px solid rgba(74,222,128,0.2);
+    border-left: 4px solid var(--green);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin: 20px 0;
+  }
+
+  .success-box p {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    color: #86efac;
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .code-block {
+    background: #0d0d16;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    margin: 20px 0;
+    overflow: hidden;
+  }
+
+  .code-header {
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+
+  .code-label {
+    font-size: 12px; font-weight: 500;
+    color: var(--text2);
+    font-family: 'JetBrains Mono', monospace;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .code-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-red { background: #ff5f57; }
+  .dot-yellow { background: #ffbd2e; }
+  .dot-green { background: #28ca42; }
+
+  .copy-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .copy-btn:hover { background: rgba(255,255,255,0.1); color: var(--text); }
+
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.7;
+    color: #e2e8f0;
+    tab-size: 2;
+  }
+
+  .kw { color: #c792ea; }
+  .str { color: #c3e88d; }
+  .num { color: #f78c6c; }
+  .fn { color: #82aaff; }
+  .cm { color: #546e7a; font-style: italic; }
+  .type { color: #ffcb6b; }
+  .prop { color: #89ddff; }
+  .val { color: #f07178; }
+  .op { color: #89ddff; }
+  .dec { color: #c792ea; }
+  .at { color: #f78c6c; }
+  .bool { color: #ff9cac; }
+  .var { color: #eeffff; }
+
+  h2.sub {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    font-size: 20px; font-weight: 600;
+    color: var(--text);
+    margin: 36px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  h2.sub span { color: var(--accent2); }
+
+  p.si {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    color: var(--text2);
+    font-size: 15px;
+    line-height: 1.9;
+    margin: 12px 0;
+  }
+
+  .steps {
+    counter-reset: step;
+    margin: 20px 0;
+  }
+
+  .step {
+    counter-increment: step;
+    display: flex; gap: 16px; align-items: flex-start;
+    margin-bottom: 24px;
+  }
+
+  .step-num {
+    width: 32px; height: 32px; min-width: 32px;
+    background: rgba(124,106,247,0.15);
+    border: 1px solid rgba(124,106,247,0.3);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 600;
+    color: var(--accent2);
+  }
+
+  .step-num::before { content: counter(step); }
+
+  .step-content {
+    flex: 1;
+  }
+
+  .step-title {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    font-size: 15px; font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .step-desc {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    color: var(--text2);
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-size: 12px; font-weight: 500;
+  }
+
+  .tag-purple { background: rgba(124,106,247,0.15); color: var(--accent3); border: 1px solid rgba(124,106,247,0.25); }
+  .tag-green { background: rgba(74,222,128,0.1); color: #86efac; border: 1px solid rgba(74,222,128,0.2); }
+  .tag-cyan { background: rgba(34,211,238,0.1); color: var(--cyan2); border: 1px solid rgba(34,211,238,0.2); }
+  .tag-orange { background: rgba(251,146,60,0.1); color: #fbd38d; border: 1px solid rgba(251,146,60,0.2); }
+  .tag-pink { background: rgba(244,114,182,0.1); color: #fbcfe8; border: 1px solid rgba(244,114,182,0.2); }
+  .tag-red { background: rgba(248,113,113,0.1); color: #fca5a5; border: 1px solid rgba(248,113,113,0.2); }
+
+  .comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+  }
+
+  .comparison-table th {
+    background: var(--bg3);
+    color: var(--accent3);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .comparison-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+    font-family: 'Noto Sans Sinhala', 'JetBrains Mono', sans-serif;
+    vertical-align: top;
+  }
+
+  .comparison-table tr:last-child td { border-bottom: none; }
+
+  .comparison-table td:first-child { color: var(--text); font-weight: 500; }
+
+  code.inline {
+    background: rgba(124,106,247,0.12);
+    border: 1px solid rgba(124,106,247,0.2);
+    color: var(--accent3);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+
+  .relation-diagram {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .rel-box {
+    background: var(--bg4);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    min-width: 150px;
+    text-align: center;
+  }
+
+  .rel-box-title {
+    font-size: 13px; font-weight: 600;
+    color: var(--accent2);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 8px;
+  }
+
+  .rel-box-fields {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.8;
+    text-align: left;
+  }
+
+  .rel-arrow {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+
+  .rel-arrow-line {
+    width: 60px; height: 2px;
+    background: var(--accent);
+    position: relative;
+  }
+
+  .rel-arrow-line::after {
+    content: '▶';
+    position: absolute; right: -10px; top: -8px;
+    color: var(--accent); font-size: 12px;
+  }
+
+  .rel-type {
+    font-size: 11px; color: var(--accent3);
+    font-family: 'Inter', sans-serif;
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .feature-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 16px;
+    transition: border-color 0.2s;
+  }
+
+  .feature-card:hover { border-color: var(--border2); }
+
+  .feature-icon { font-size: 24px; margin-bottom: 10px; }
+
+  .feature-title {
+    font-size: 14px; font-weight: 600;
+    color: var(--text);
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    margin-bottom: 6px;
+  }
+
+  .feature-desc {
+    font-size: 13px;
+    color: var(--text2);
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    line-height: 1.7;
+  }
+
+  .breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: var(--text2);
+    font-family: 'Noto Sans Sinhala', sans-serif;
+  }
+
+  .breadcrumb span { color: var(--accent2); font-weight: 500; }
+
+  .toc {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-bottom: 32px;
+  }
+
+  .toc-title {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    font-size: 14px; font-weight: 600;
+    color: var(--text2);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 12px;
+  }
+
+  .toc-list {
+    list-style: none;
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+
+  .toc-list li a {
+    color: var(--text2);
+    text-decoration: none;
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    display: block;
+    transition: all 0.2s;
+  }
+
+  .toc-list li a:hover {
+    color: var(--accent2);
+    border-color: rgba(124,106,247,0.3);
+    background: rgba(124,106,247,0.05);
+  }
+
+  .verdict-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .verdict-row:last-child { border-bottom: none; }
+
+  .verdict-icon { font-size: 18px; }
+
+  .verdict-text {
+    font-family: 'Noto Sans Sinhala', sans-serif;
+    font-size: 14px; color: var(--text2); line-height: 1.7;
+  }
+
+  .verdict-text strong { color: var(--text); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">🗃️ ඔබේ Node.js Projects සඳහා</div>
+  <h1>Prisma ORM සම්පූර්ණ<br>සිංහල මාර්ගෝපදේශය</h1>
+  <p>Beginner සිට Advanced දක්වා — Real Examples සමඟ Database Operations ඉගෙන ගනිමු</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">10+</span><span class="stat-label">Topics</span></div>
+    <div class="stat"><span class="stat-num">50+</span><span class="stat-label">Code Examples</span></div>
+    <div class="stat"><span class="stat-num">100%</span><span class="stat-label">සිංහල</span></div>
+  </div>
+</div>
+
+<nav class="nav" id="mainNav">
+  <button class="nav-btn active" onclick="showSection('intro')">🏠 හැඳින්වීම</button>
+  <button class="nav-btn" onclick="showSection('setup')">⚙️ Setup</button>
+  <button class="nav-btn" onclick="showSection('schema')">📋 Schema</button>
+  <button class="nav-btn" onclick="showSection('migrate')">🔄 Migration</button>
+  <button class="nav-btn" onclick="showSection('crud')">✏️ CRUD</button>
+  <button class="nav-btn" onclick="showSection('relations')">🔗 Relations</button>
+  <button class="nav-btn" onclick="showSection('advanced')">🚀 Advanced</button>
+  <button class="nav-btn" onclick="showSection('errors')">🛡️ Error Handling</button>
+  <button class="nav-btn" onclick="showSection('tips')">💡 Best Practices</button>
+</nav>
+
+<div class="content">
+
+<!-- ==================== INTRO ==================== -->
+<div class="section active" id="intro">
+  <div class="section-header">
+    <div class="section-title"><div class="icon">🏠</div> Prisma ORM කියන්නේ මොකක්ද?</div>
+    <p class="section-desc">Prisma කියන්නේ Node.js සහ TypeScript සඳහා ඉතා ජනප්‍රිය modern database toolkit එකක්. Raw SQL ලිවීමේ සිට developer-friendly API usage දක්වා ගමන් කිරීමට Prisma සහාය වෙනවා.</p>
+  </div>
+
+  <div class="highlight-box">
+    <p>💬 සරලව කිවොත් — Prisma ORM කියන්නේ ඔබ JavaScript/TypeScript code ලිවීමෙන් Database (PostgreSQL, MySQL, SQLite, MongoDB, etc.) සමඟ කතා කළ හැකි library/toolkit එකක්. SQL ඉගෙනීම නැතිව database handle කළ හැකිය.</p>
+  </div>
+
+  <h2 class="sub"><span>01.</span> Prisma vs Traditional Approaches</h2>
+
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>ක්‍රමය</th>
+        <th>Code Example</th>
+        <th>ගැටළු</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Raw SQL</td>
+        <td><code class="inline">SELECT * FROM users WHERE id = 1</code></td>
+        <td>Type safety නැහැ, Errors runtime-ලදී දැනෙයි</td>
+      </tr>
+      <tr>
+        <td>Traditional ORM (Sequelize)</td>
+        <td><code class="inline">User.findOne({ where: { id: 1 } })</code></td>
+        <td>Complex, TypeScript support දුර්වලයි</td>
+      </tr>
+      <tr>
+        <td>Prisma ORM ✅</td>
+        <td><code class="inline">prisma.user.findUnique({ where: { id: 1 } })</code></td>
+        <td>Type-safe, Auto-complete, Easy to read</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="sub"><span>02.</span> Prisma Components 3ක්</h2>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📄</div>
+      <div class="feature-title">Prisma Schema</div>
+      <div class="feature-desc">Database models define කරන <code class="inline">.prisma</code> file. ඔබගේ data structure සිංහල essay write කරනවා වගේ simply describe කරන්න.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Prisma Client</div>
+      <div class="feature-desc">Auto-generated TypeScript-safe database client. CRUD operations perform කිරීමට භාවිත කරයි. Schema change කළාම automatically update වෙයි.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔄</div>
+      <div class="feature-title">Prisma Migrate</div>
+      <div class="feature-desc">Database schema changes track කිරීමේ tool. Team members සිටිය SQL manually run කිරීමේ අවශ්‍යතාවය ඉවත් කරයි.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔍</div>
+      <div class="feature-title">Prisma Studio</div>
+      <div class="feature-desc">Visual GUI interface. Browser-ලදී data view, create, edit, delete කළ හැකි admin panel වගේ tool.</div>
+    </div>
+  </div>
+
+  <h2 class="sub"><span>03.</span> Prisma Support කරන Databases</h2>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🐘 SQL Databases</div>
+      <div class="card-text">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+          <span class="tag tag-cyan">PostgreSQL</span>
+          <span class="tag tag-orange">MySQL</span>
+          <span class="tag tag-purple">SQLite</span>
+          <span class="tag tag-green">SQL Server</span>
+          <span class="tag tag-pink">CockroachDB</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🍃 NoSQL Databases</div>
+      <div class="card-text">
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+          <span class="tag tag-green">MongoDB (Preview)</span>
+        </div>
+        <p style="margin-top:12px;font-family:'Noto Sans Sinhala',sans-serif;font-size:13px;color:var(--text2);">NoSQL support limited. Relational databases-ටයි Prisma best.</p>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sub"><span>04.</span> Real World Example - සරල ව්‍යාපාරයක්</h2>
+
+  <p class="si">Blog website එකක් හදනවා. Users ඉන්නවා, Posts ලියනවා. Prisma නොමැතිව SQL ලිවීමට සිදු වන අතර Prisma සමඟ TypeScript code via easy API use කරන්න පුලුවන්.</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label">
+        <div class="code-dot dot-red"></div>
+        <div class="code-dot dot-yellow"></div>
+        <div class="code-dot dot-green"></div>
+        Prisma vs Raw SQL — blog post create කිරීම
+      </div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="cm">// ❌ Raw SQL - Error prone, No type safety</span>
+<span class="kw">const</span> <span class="var">result</span> <span class="op">=</span> <span class="kw">await</span> <span class="fn">db</span>.<span class="fn">query</span>(
+  <span class="str">"INSERT INTO posts (title, content, userId) VALUES (?, ?, ?)"</span>,
+  [<span class="str">'My Post'</span>, <span class="str">'Content here...'</span>, <span class="num">1</span>]
+);
+
+<span class="cm">// ✅ Prisma - Type-safe, Auto-complete, Clean</span>
+<span class="kw">const</span> <span class="var">post</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">create</span>({
+  <span class="prop">data</span>: {
+    <span class="prop">title</span>: <span class="str">'My Post'</span>,
+    <span class="prop">content</span>: <span class="str">'Content here...'</span>,
+    <span class="prop">author</span>: {
+      <span class="prop">connect</span>: { <span class="prop">id</span>: <span class="num">1</span> }
+    }
+  }
+});</pre>
+  </div>
+
+  <div class="success-box">
+    <p>✅ Prisma use කිරීමෙන් — Type Errors compile time-ලදී catch වෙනවා, Auto-complete ලැබෙනවා, Code much cleaner වෙනවා, Database schema change කළාම code automatically update වෙනවා.</p>
+  </div>
+</div>
+
+<!-- ==================== SETUP ==================== -->
+<div class="section" id="setup">
+  <div class="section-header">
+    <div class="section-title"><div class="icon">⚙️</div> Project Setup කරන්නේ කෙසේද?</div>
+    <p class="section-desc">Step by step Prisma project setup කිරීම — Node.js, TypeScript සහ PostgreSQL/SQLite සමඟ.</p>
+  </div>
+
+  <h2 class="sub"><span>01.</span> Prerequisites</h2>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">✅ ඔබ දැනටමත් install කළ යුතු දේ</div>
+      <div class="card-text" style="margin-top:10px;">
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div>🟢 <strong style="color:var(--text)">Node.js</strong> (v16 හෝ ඊට ඉහළ)</div>
+          <div>🟢 <strong style="color:var(--text)">npm</strong> හෝ <strong style="color:var(--text)">pnpm</strong></div>
+          <div>🟢 Database (PostgreSQL/MySQL/SQLite)</div>
+          <div>🟡 TypeScript (Optional නමුත් Recommended)</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">💡 ඉගෙනීමට SQLite Use කරමු</div>
+      <div class="card-text">SQLite use කිරීමෙන් External database install කිරීමේ අවශ්‍යතාවය නැහැ — file-based database. Learning-ට perfect!</div>
+    </div>
+  </div>
+
+  <h2 class="sub"><span>02.</span> New Project Create කිරීම</h2>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num"></div>
+      <div class="step-content">
+        <div class="step-title">Project Folder හදාගෙන npm init කරන්න</div>
+        <div class="step-desc">Terminal open කර commands run කරන්න.</div>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Terminal</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><span class="cm"># New folder create කරන්න</span>
+mkdir my-prisma-app
+cd my-prisma-app
+
+<span class="cm"># npm project initialize</span>
+npm init -y
+
+<span class="cm"># TypeScript dependencies</span>
+npm install typescript ts-node @types/node --save-dev
+
+<span class="cm"># tsconfig.json create</span>
+npx tsc --init</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num"></div>
+      <div class="step-content">
+        <div class="step-title">Prisma Install කරන්න</div>
+        <div class="step-desc">Prisma CLI dev dependency ලෙසත්, Prisma Client runtime dependency ලෙසත් install කරන්න.</div>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Terminal</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><span class="cm"># Prisma CLI (dev dependency)</span>
+npm install prisma --save-dev
+
+<span class="cm"># Prisma Client (runtime)</span>
+npm install @prisma/client
+
+<span class="cm"># Prisma init (SQLite use)</span>
+npx prisma init --datasource-provider sqlite</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num"></div>
+      <div class="step-content">
+        <div class="step-title">Project Structure දකින්න</div>
+        <div class="step-desc">npx prisma init command run කළාට පස්සේ මේ files automatically create වෙනවා.</div>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Project Structure</div>
+          </div>
+          <pre>my-prisma-app/
+├── <span class="fn">prisma/</span>
+│   └── <span class="str">schema.prisma</span>   <span class="cm">← Database models define කරන file</span>
+├── <span class="var">src/</span>
+│   └── <span class="var">index.ts</span>
+├── <span class="str">.env</span>               <span class="cm">← Database URL store කරන file</span>
+├── package.json
+└── tsconfig.json</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num"></div>
+      <div class="step-content">
+        <div class="step-title">.env File Configure කරන්න</div>
+        <div class="step-desc">Database connection string .env file-ලදී set කරන්න. SQLite use කරන නිසා simple path.</div>
+        <div class="code-block">
+          <div class="code-header">
+            <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>.env</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          </div>
+          <pre><span class="cm"># SQLite — file path</span>
+<span class="prop">DATABASE_URL</span><span class="op">=</span><span class="str">"file:./dev.db"</span>
+
+<span class="cm"># PostgreSQL use කරනවා නම් (Optional):</span>
+<span class="cm"># DATABASE_URL="postgresql://user:password@localhost:5432/mydb"</span>
+
+<span class="cm"># MySQL use කරනවා නම් (Optional):</span>
+<span class="cm"># DATABASE_URL="mysql://user:password@localhost:3306/mydb"</span></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sub"><span>03.</span> Prisma Client Setup</h2>
+
+  <p class="si">Application-ලදී Prisma Client use කිරීමට singleton pattern use කිරීම best practice. එය multiple connections create වීම prevent කරයි.</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>src/lib/prisma.ts</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="kw">import</span> { <span class="type">PrismaClient</span> } <span class="kw">from</span> <span class="str">'@prisma/client'</span>
+
+<span class="cm">// Global variable type declare</span>
+<span class="kw">declare</span> <span class="kw">global</span> {
+  <span class="kw">var</span> <span class="var">prisma</span>: <span class="type">PrismaClient</span> <span class="op">|</span> <span class="kw">undefined</span>
+}
+
+<span class="cm">// Singleton pattern — development-ලදී hot reload connection issues avoid</span>
+<span class="kw">export const</span> <span class="var">prisma</span> <span class="op">=</span>
+  <span class="var">globalThis</span>.<span class="var">prisma</span> <span class="op">??</span> <span class="kw">new</span> <span class="fn">PrismaClient</span>({
+    <span class="prop">log</span>: [<span class="str">'query'</span>, <span class="str">'error'</span>, <span class="str">'warn'</span>], <span class="cm">// SQL queries log කරනවා</span>
+  })
+
+<span class="kw">if</span> (<span class="var">process</span>.<span class="var">env</span>.<span class="prop">NODE_ENV</span> <span class="op">!==</span> <span class="str">'production'</span>) {
+  <span class="var">globalThis</span>.<span class="var">prisma</span> <span class="op">=</span> <span class="var">prisma</span>
+}</pre>
+  </div>
+
+  <div class="info-box">
+    <p>💡 ඉහත code explain: <code class="inline">globalThis.prisma ?? new PrismaClient()</code> — already PrismaClient instance exist නම් reuse කරයි, නැත්නම් new one create කරයි. Development-ලදී hot reload ගැටළු prevent කරයි.</p>
+  </div>
+</div>
+
+<!-- ==================== SCHEMA ==================== -->
+<div class="section" id="schema">
+  <div class="section-header">
+    <div class="section-title"><div class="icon">📋</div> Prisma Schema ලිවීම</div>
+    <p class="section-desc">schema.prisma file-ලදී ඔබගේ database structure define කරනවා. ඉගෙනීමට ඉතාම easy syntax.</p>
+  </div>
+
+  <h2 class="sub"><span>01.</span> Schema File Structure</h2>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>prisma/schema.prisma — Basic Structure</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="cm">// 1. Generator — Prisma Client generate කරන්නේ කොහොමද?</span>
+<span class="kw">generator</span> <span class="fn">client</span> {
+  <span class="prop">provider</span> <span class="op">=</span> <span class="str">"prisma-client-js"</span>
+}
+
+<span class="cm">// 2. Datasource — Database කොහොමද connect කරන්නේ?</span>
+<span class="kw">datasource</span> <span class="fn">db</span> {
+  <span class="prop">provider</span> <span class="op">=</span> <span class="str">"sqlite"</span>     <span class="cm">// "postgresql", "mysql", "sqlite"</span>
+  <span class="prop">url</span>      <span class="op">=</span> <span class="fn">env</span>(<span class="str">"DATABASE_URL"</span>)
+}
+
+<span class="cm">// 3. Model — Database Table = Prisma Model</span>
+<span class="kw">model</span> <span class="type">User</span> {
+  <span class="prop">id</span>        <span class="type">Int</span>       <span class="at">@id</span> <span class="at">@default</span>(<span class="fn">autoincrement</span>())
+  <span class="prop">email</span>     <span class="type">String</span>    <span class="at">@unique</span>
+  <span class="prop">name</span>      <span class="type">String</span><span class="op">?</span>            <span class="cm">// ? = Optional field</span>
+  <span class="prop">createdAt</span> <span class="type">DateTime</span>  <span class="at">@default</span>(<span class="fn">now</span>())
+}</pre>
+  </div>
+
+  <h2 class="sub"><span>02.</span> Field Types</h2>
+
+  <table class="comparison-table">
+    <thead>
+      <tr><th>Prisma Type</th><th>SQL Type</th><th>Example</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code class="inline">String</code></td><td>VARCHAR / TEXT</td><td>name, email, title</td></tr>
+      <tr><td><code class="inline">Int</code></td><td>INTEGER</td><td>id, age, count</td></tr>
+      <tr><td><code class="inline">Float</code></td><td>FLOAT / DOUBLE</td><td>price, rating</td></tr>
+      <tr><td><code class="inline">Boolean</code></td><td>BOOLEAN / TINYINT</td><td>isActive, isVerified</td></tr>
+      <tr><td><code class="inline">DateTime</code></td><td>DATETIME / TIMESTAMP</td><td>createdAt, updatedAt</td></tr>
+      <tr><td><code class="inline">Json</code></td><td>JSON</td><td>metadata, settings</td></tr>
+      <tr><td><code class="inline">String?</code></td><td>VARCHAR NULL</td><td>Optional field</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="sub"><span>03.</span> Common Field Attributes</h2>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Field Attributes Examples</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="kw">model</span> <span class="type">User</span> {
+  <span class="prop">id</span>         <span class="type">Int</span>      <span class="at">@id</span> <span class="at">@default</span>(<span class="fn">autoincrement</span>())   <span class="cm">// Primary Key, Auto increment</span>
+  <span class="prop">uuid</span>       <span class="type">String</span>   <span class="at">@id</span> <span class="at">@default</span>(<span class="fn">uuid</span>())           <span class="cm">// UUID primary key</span>
+  <span class="prop">email</span>      <span class="type">String</span>   <span class="at">@unique</span>                       <span class="cm">// Unique value</span>
+  <span class="prop">username</span>   <span class="type">String</span>   <span class="at">@unique</span>
+  <span class="prop">bio</span>        <span class="type">String</span><span class="op">?</span>                                 <span class="cm">// Optional (nullable)</span>
+  <span class="prop">role</span>       <span class="type">Role</span>     <span class="at">@default</span>(<span class="type">USER</span>)                <span class="cm">// Default value</span>
+  <span class="prop">createdAt</span>  <span class="type">DateTime</span> <span class="at">@default</span>(<span class="fn">now</span>())              <span class="cm">// Create time auto</span>
+  <span class="prop">updatedAt</span>  <span class="type">DateTime</span> <span class="at">@updatedAt</span>                    <span class="cm">// Update time auto</span>
+  <span class="prop">score</span>      <span class="type">Int</span>      <span class="at">@default</span>(<span class="num">0</span>)                  <span class="cm">// Default number</span>
+
+  <span class="cm">// Database-level field name different නම්</span>
+  <span class="prop">phoneNumber</span> <span class="type">String</span> <span class="at">@map</span>(<span class="str">"phone_number"</span>)
+
+  <span class="cm">// Table name customize</span>
+  <span class="at">@@map</span>(<span class="str">"users"</span>)
+}
+
+<span class="cm">// Enum — fixed values list</span>
+<span class="kw">enum</span> <span class="type">Role</span> {
+  <span class="type">USER</span>
+  <span class="type">ADMIN</span>
+  <span class="type">MODERATOR</span>
+}</pre>
+  </div>
+
+  <h2 class="sub"><span>04.</span> Complete Blog Schema Example</h2>
+
+  <p class="si">Real-world blog application-ලදී users, posts, comments, categories ඉන්නවා. ඒ සඳහා complete schema example:</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>prisma/schema.prisma — Blog Application</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="kw">generator</span> <span class="fn">client</span> {
+  <span class="prop">provider</span> <span class="op">=</span> <span class="str">"prisma-client-js"</span>
+}
+
+<span class="kw">datasource</span> <span class="fn">db</span> {
+  <span class="prop">provider</span> <span class="op">=</span> <span class="str">"sqlite"</span>
+  <span class="prop">url</span>      <span class="op">=</span> <span class="fn">env</span>(<span class="str">"DATABASE_URL"</span>)
+}
+
+<span class="cm">// User Model — blog users</span>
+<span class="kw">model</span> <span class="type">User</span> {
+  <span class="prop">id</span>        <span class="type">Int</span>      <span class="at">@id</span> <span class="at">@default</span>(<span class="fn">autoincrement</span>())
+  <span class="prop">email</span>     <span class="type">String</span>   <span class="at">@unique</span>
+  <span class="prop">name</span>      <span class="type">String</span>
+  <span class="prop">password</span>  <span class="type">String</span>
+  <span class="prop">role</span>      <span class="type">Role</span>     <span class="at">@default</span>(<span class="type">USER</span>)
+  <span class="prop">avatar</span>    <span class="type">String</span><span class="op">?</span>
+  <span class="prop">createdAt</span> <span class="type">DateTime</span> <span class="at">@default</span>(<span class="fn">now</span>())
+  <span class="prop">updatedAt</span> <span class="type">DateTime</span> <span class="at">@updatedAt</span>
+
+  <span class="cm">// Relations</span>
+  <span class="prop">posts</span>     <span class="type">Post</span>[]       <span class="cm">// User-ට posts many ඉන්නවා</span>
+  <span class="prop">comments</span>  <span class="type">Comment</span>[]   <span class="cm">// User-ට comments many ඉන්නවා</span>
+}
+
+<span class="cm">// Post Model — blog articles</span>
+<span class="kw">model</span> <span class="type">Post</span> {
+  <span class="prop">id</span>          <span class="type">Int</span>        <span class="at">@id</span> <span class="at">@default</span>(<span class="fn">autoincrement</span>())
+  <span class="prop">title</span>       <span class="type">String</span>
+  <span class="prop">slug</span>        <span class="type">String</span>     <span class="at">@unique</span>
+  <span class="prop">content</span>     <span class="type">String</span>
+  <span class="prop">excerpt</span>     <span class="type">String</span><span class="op">?</span>
+  <span class="prop">published</span>   <span class="type">Boolean</span>    <span class="at">@default</span>(<span class="bool">false</span>)
+  <span class="prop">views</span>       <span class="type">Int</span>        <span class="at">@default</span>(<span class="num">0</span>)
+  <span class="prop">createdAt</span>   <span class="type">DateTime</span>   <span class="at">@default</span>(<span class="fn">now</span>())
+  <span class="prop">updatedAt</span>   <span class="type">DateTime</span>   <span class="at">@updatedAt</span>
+
+  <span class="cm">// Foreign Key</span>
+  <span class="prop">authorId</span>    <span class="type">Int</span>
+  <span class="prop">author</span>      <span class="type">User</span>       <span class="at">@relation</span>(<span class="prop">fields</span>: [<span class="prop">authorId</span>], <span class="prop">references</span>: [<span class="prop">id</span>])
+
+  <span class="prop">comments</span>    <span class="type">Comment</span>[]
+  <span class="prop">categories</span>  <span class="type">Category</span>[] <span class="cm">// Many-to-Many</span>
+}
+
+<span class="cm">// Comment Model</span>
+<span class="kw">model</span> <span class="type">Comment</span> {
+  <span class="prop">id</span>        <span class="type">Int</span>      <span class="at">@id</span> <span class="at">@default</span>(<span class="fn">autoincrement</span>())
+  <span class="prop">content</span>   <span class="type">String</span>
+  <span class="prop">createdAt</span> <span class="type">DateTime</span> <span class="at">@default</span>(<span class="fn">now</span>())
+
+  <span class="prop">postId</span>    <span class="type">Int</span>
+  <span class="prop">post</span>      <span class="type">Post</span>     <span class="at">@relation</span>(<span class="prop">fields</span>: [<span class="prop">postId</span>], <span class="prop">references</span>: [<span class="prop">id</span>])
+
+  <span class="prop">authorId</span>  <span class="type">Int</span>
+  <span class="prop">author</span>    <span class="type">User</span>     <span class="at">@relation</span>(<span class="prop">fields</span>: [<span class="prop">authorId</span>], <span class="prop">references</span>: [<span class="prop">id</span>])
+}
+
+<span class="cm">// Category Model</span>
+<span class="kw">model</span> <span class="type">Category</span> {
+  <span class="prop">id</span>    <span class="type">Int</span>    <span class="at">@id</span> <span class="at">@default</span>(<span class="fn">autoincrement</span>())
+  <span class="prop">name</span>  <span class="type">String</span> <span class="at">@unique</span>
+  <span class="prop">posts</span> <span class="type">Post</span>[]
+}
+
+<span class="kw">enum</span> <span class="type">Role</span> {
+  <span class="type">USER</span>
+  <span class="type">ADMIN</span>
+  <span class="type">MODERATOR</span>
+}</pre>
+  </div>
+</div>
+
+<!-- ==================== MIGRATE ==================== -->
+<div class="section" id="migrate">
+  <div class="section-header">
+    <div class="section-title"><div class="icon">🔄</div> Prisma Migrations</div>
+    <p class="section-desc">Schema changes database-ලදී apply කිරීමට Prisma Migrate use කරනවා.</p>
+  </div>
+
+  <h2 class="sub"><span>01.</span> Migration Commands</h2>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Terminal — Migration Commands</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="cm"># 1. Development-ලදී migration create සහ apply</span>
+npx prisma migrate dev --name init
+
+<span class="cm"># 2. Migration name describe කිරීම (best practice)</span>
+npx prisma migrate dev --name add-user-model
+npx prisma migrate dev --name add-post-table
+npx prisma migrate dev --name add-email-to-profile
+
+<span class="cm"># 3. Production migration apply</span>
+npx prisma migrate deploy
+
+<span class="cm"># 4. Migration status check</span>
+npx prisma migrate status
+
+<span class="cm"># 5. Prisma Client re-generate (Schema change කළාම)</span>
+npx prisma generate
+
+<span class="cm"># 6. Prisma Studio open (GUI Browser Interface)</span>
+npx prisma studio
+
+<span class="cm"># 7. Database reset (CAREFUL! — All data deleted)</span>
+npx prisma migrate reset</pre>
+  </div>
+
+  <h2 class="sub"><span>02.</span> Migration Workflow</h2>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num"></div>
+      <div class="step-content">
+        <div class="step-title">Schema.prisma file edit කරන්න</div>
+        <div class="step-desc">New model add කිරීම, field add/remove කිරීම, etc.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num"></div>
+      <div class="step-content">
+        <div class="step-title"><code class="inline">npx prisma migrate dev</code> run කරන්න</div>
+        <div class="step-desc">Prisma automatically SQL migration file create කරනවා, database-ලදී apply කරනවා, Prisma Client re-generate කරනවා.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num"></div>
+      <div class="step-content">
+        <div class="step-title">Type-safe client use කරන්න</div>
+        <div class="step-desc">Prisma Client automatically update වෙලා තිබෙනවා. New models, new fields use කළ හැකිය.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="sub"><span>03.</span> Seed Data (Initial Data)</h2>
+
+  <p class="si">Development-ලදී test data insert කිරීමට seed script use කරයි.</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>prisma/seed.ts</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="kw">import</span> { <span class="type">PrismaClient</span> } <span class="kw">from</span> <span class="str">'@prisma/client'</span>
+
+<span class="kw">const</span> <span class="var">prisma</span> <span class="op">=</span> <span class="kw">new</span> <span class="fn">PrismaClient</span>()
+
+<span class="kw">async function</span> <span class="fn">main</span>() {
+  <span class="cm">// Admin user create</span>
+  <span class="kw">const</span> <span class="var">admin</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">upsert</span>({
+    <span class="prop">where</span>: { <span class="prop">email</span>: <span class="str">'admin@example.com'</span> },
+    <span class="prop">update</span>: {},  <span class="cm">// Already exist නම් update no</span>
+    <span class="prop">create</span>: {
+      <span class="prop">email</span>: <span class="str">'admin@example.com'</span>,
+      <span class="prop">name</span>: <span class="str">'Admin User'</span>,
+      <span class="prop">password</span>: <span class="str">'hashed_password'</span>,
+      <span class="prop">role</span>: <span class="str">'ADMIN'</span>,
+    },
+  })
+
+  <span class="cm">// Test posts create</span>
+  <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">createMany</span>({
+    <span class="prop">data</span>: [
+      {
+        <span class="prop">title</span>: <span class="str">'First Post'</span>,
+        <span class="prop">slug</span>: <span class="str">'first-post'</span>,
+        <span class="prop">content</span>: <span class="str">'This is my first blog post!'</span>,
+        <span class="prop">published</span>: <span class="bool">true</span>,
+        <span class="prop">authorId</span>: <span class="var">admin</span>.<span class="prop">id</span>,
+      },
+      {
+        <span class="prop">title</span>: <span class="str">'Second Post'</span>,
+        <span class="prop">slug</span>: <span class="str">'second-post'</span>,
+        <span class="prop">content</span>: <span class="str">'This is my second blog post!'</span>,
+        <span class="prop">published</span>: <span class="bool">false</span>,
+        <span class="prop">authorId</span>: <span class="var">admin</span>.<span class="prop">id</span>,
+      },
+    ],
+  })
+
+  console.<span class="fn">log</span>(<span class="str">'✅ Seed data successfully inserted!'</span>)
+}
+
+<span class="fn">main</span>()
+  .<span class="fn">catch</span>(<span class="var">e</span> <span class="op">=></span> {
+    console.<span class="fn">error</span>(<span class="var">e</span>)
+    <span class="var">process</span>.<span class="fn">exit</span>(<span class="num">1</span>)
+  })
+  .<span class="fn">finally</span>(<span class="kw">async</span> () <span class="op">=></span> {
+    <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">$disconnect</span>()
+  })</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>package.json — Seed Script Configure</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre>{
+  <span class="str">"prisma"</span>: {
+    <span class="str">"seed"</span>: <span class="str">"ts-node prisma/seed.ts"</span>
+  }
+}
+
+<span class="cm">// Run seed:</span>
+<span class="cm">// npx prisma db seed</span></pre>
+  </div>
+</div>
+
+<!-- ==================== CRUD ==================== -->
+<div class="section" id="crud">
+  <div class="section-header">
+    <div class="section-title"><div class="icon">✏️</div> CRUD Operations</div>
+    <p class="section-desc">Create, Read, Update, Delete — Database සමඟ interact කිරීමේ 4 basic operations.</p>
+  </div>
+
+  <h2 class="sub"><span>01.</span> Create — Data Insert කිරීම</h2>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Create Operations</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="cm">// ① Single record create</span>
+<span class="kw">const</span> <span class="var">user</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">create</span>({
+  <span class="prop">data</span>: {
+    <span class="prop">email</span>: <span class="str">'kasun@example.com'</span>,
+    <span class="prop">name</span>: <span class="str">'Kasun Perera'</span>,
+    <span class="prop">password</span>: <span class="str">'hashed_pw_123'</span>,
+  },
+})
+console.<span class="fn">log</span>(<span class="var">user</span>.<span class="prop">id</span>)   <span class="cm">// → 1</span>
+console.<span class="fn">log</span>(<span class="var">user</span>.<span class="prop">email</span>) <span class="cm">// → 'kasun@example.com'</span>
+
+<span class="cm">// ② Multiple records create (bulk insert)</span>
+<span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">createMany</span>({
+  <span class="prop">data</span>: [
+    { <span class="prop">email</span>: <span class="str">'user1@example.com'</span>, <span class="prop">name</span>: <span class="str">'User One'</span>, <span class="prop">password</span>: <span class="str">'pw1'</span> },
+    { <span class="prop">email</span>: <span class="str">'user2@example.com'</span>, <span class="prop">name</span>: <span class="str">'User Two'</span>, <span class="prop">password</span>: <span class="str">'pw2'</span> },
+    { <span class="prop">email</span>: <span class="str">'user3@example.com'</span>, <span class="prop">name</span>: <span class="str">'User Three'</span>, <span class="prop">password</span>: <span class="str">'pw3'</span> },
+  ],
+  <span class="prop">skipDuplicates</span>: <span class="bool">true</span>,  <span class="cm">// Duplicate email skip කරනවා</span>
+})
+
+<span class="cm">// ③ Nested create — User create + Post create (same time)</span>
+<span class="kw">const</span> <span class="var">userWithPost</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">create</span>({
+  <span class="prop">data</span>: {
+    <span class="prop">email</span>: <span class="str">'writer@example.com'</span>,
+    <span class="prop">name</span>: <span class="str">'Blog Writer'</span>,
+    <span class="prop">password</span>: <span class="str">'secure_pw'</span>,
+    <span class="prop">posts</span>: {
+      <span class="prop">create</span>: {               <span class="cm">// User create-ලදී post ද create</span>
+        <span class="prop">title</span>: <span class="str">'My First Article'</span>,
+        <span class="prop">slug</span>: <span class="str">'my-first-article'</span>,
+        <span class="prop">content</span>: <span class="str">'Article content here...'</span>,
+      }
+    }
+  },
+  <span class="prop">include</span>: { <span class="prop">posts</span>: <span class="bool">true</span> }  <span class="cm">// Response-ලදී posts ද include</span>
+})
+
+<span class="cm">// ④ Upsert — exist නම් update, නැත්නම් create</span>
+<span class="kw">const</span> <span class="var">upserted</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">upsert</span>({
+  <span class="prop">where</span>: { <span class="prop">email</span>: <span class="str">'kasun@example.com'</span> },
+  <span class="prop">update</span>: { <span class="prop">name</span>: <span class="str">'Kasun Updated'</span> },
+  <span class="prop">create</span>: {
+    <span class="prop">email</span>: <span class="str">'kasun@example.com'</span>,
+    <span class="prop">name</span>: <span class="str">'Kasun New'</span>,
+    <span class="prop">password</span>: <span class="str">'pw'</span>
+  },
+})</pre>
+  </div>
+
+  <h2 class="sub"><span>02.</span> Read — Data Fetch කිරීම</h2>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Read Operations</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="cm">// ① Single unique record find (by unique field)</span>
+<span class="kw">const</span> <span class="var">user</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">findUnique</span>({
+  <span class="prop">where</span>: { <span class="prop">id</span>: <span class="num">1</span> },          <span class="cm">// ID by find</span>
+})
+<span class="cm">// or: where: { email: 'kasun@example.com' }</span>
+
+<span class="cm">// ② First match find</span>
+<span class="kw">const</span> <span class="var">firstUser</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">findFirst</span>({
+  <span class="prop">where</span>: { <span class="prop">role</span>: <span class="str">'ADMIN'</span> },
+  <span class="prop">orderBy</span>: { <span class="prop">createdAt</span>: <span class="str">'desc'</span> },  <span class="cm">// Latest admin</span>
+})
+
+<span class="cm">// ③ All records find</span>
+<span class="kw">const</span> <span class="var">allUsers</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">findMany</span>()
+
+<span class="cm">// ④ Filtered find + select specific fields</span>
+<span class="kw">const</span> <span class="var">admins</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">findMany</span>({
+  <span class="prop">where</span>: {
+    <span class="prop">role</span>: <span class="str">'ADMIN'</span>,
+    <span class="prop">createdAt</span>: {
+      <span class="prop">gte</span>: <span class="kw">new</span> <span class="fn">Date</span>(<span class="str">'2024-01-01'</span>),  <span class="cm">// 2024 Jan after</span>
+    }
+  },
+  <span class="prop">select</span>: {            <span class="cm">// Specific fields only</span>
+    <span class="prop">id</span>: <span class="bool">true</span>,
+    <span class="prop">name</span>: <span class="bool">true</span>,
+    <span class="prop">email</span>: <span class="bool">true</span>,
+    <span class="prop">password</span>: <span class="bool">false</span>,   <span class="cm">// Password exclude!</span>
+  },
+  <span class="prop">orderBy</span>: { <span class="prop">name</span>: <span class="str">'asc'</span> },
+  <span class="prop">take</span>: <span class="num">10</span>,             <span class="cm">// First 10 only</span>
+  <span class="prop">skip</span>: <span class="num">0</span>,              <span class="cm">// Pagination</span>
+})
+
+<span class="cm">// ⑤ Include related data</span>
+<span class="kw">const</span> <span class="var">userWithPosts</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">findUnique</span>({
+  <span class="prop">where</span>: { <span class="prop">id</span>: <span class="num">1</span> },
+  <span class="prop">include</span>: {
+    <span class="prop">posts</span>: {
+      <span class="prop">where</span>: { <span class="prop">published</span>: <span class="bool">true</span> },    <span class="cm">// Published posts only</span>
+      <span class="prop">orderBy</span>: { <span class="prop">createdAt</span>: <span class="str">'desc'</span> },
+      <span class="prop">take</span>: <span class="num">5</span>,
+    },
+    <span class="prop">_count</span>: { <span class="prop">select</span>: { <span class="prop">posts</span>: <span class="bool">true</span> } } <span class="cm">// Total post count</span>
+  }
+})
+
+<span class="cm">// ⑥ Count query</span>
+<span class="kw">const</span> <span class="var">totalUsers</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">count</span>()
+<span class="kw">const</span> <span class="var">adminCount</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">count</span>({
+  <span class="prop">where</span>: { <span class="prop">role</span>: <span class="str">'ADMIN'</span> }
+})</pre>
+  </div>
+
+  <h2 class="sub"><span>03.</span> Update — Data Update කිරීම</h2>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Update Operations</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="cm">// ① Single record update</span>
+<span class="kw">const</span> <span class="var">updated</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">update</span>({
+  <span class="prop">where</span>: { <span class="prop">id</span>: <span class="num">1</span> },
+  <span class="prop">data</span>: {
+    <span class="prop">name</span>: <span class="str">'Updated Name'</span>,
+    <span class="prop">role</span>: <span class="str">'ADMIN'</span>,
+  },
+})
+
+<span class="cm">// ② Numeric field increment/decrement</span>
+<span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">update</span>({
+  <span class="prop">where</span>: { <span class="prop">id</span>: <span class="num">1</span> },
+  <span class="prop">data</span>: {
+    <span class="prop">views</span>: { <span class="prop">increment</span>: <span class="num">1</span> },  <span class="cm">// views++ (atomic)</span>
+    <span class="prop">score</span>: { <span class="prop">decrement</span>: <span class="num">5</span> },
+    <span class="prop">rating</span>: { <span class="prop">multiply</span>: <span class="num">2</span> },
+  }
+})
+
+<span class="cm">// ③ Multiple records update</span>
+<span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">updateMany</span>({
+  <span class="prop">where</span>: {
+    <span class="prop">authorId</span>: <span class="num">1</span>,
+    <span class="prop">published</span>: <span class="bool">false</span>
+  },
+  <span class="prop">data</span>: {
+    <span class="prop">published</span>: <span class="bool">true</span>   <span class="cm">// User 1-ගේ unpublished posts ඔක්කොම publish</span>
+  }
+})</pre>
+  </div>
+
+  <h2 class="sub"><span>04.</span> Delete — Data Delete කිරීම</h2>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Delete Operations</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="cm">// ① Single record delete</span>
+<span class="kw">const</span> <span class="var">deleted</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">delete</span>({
+  <span class="prop">where</span>: { <span class="prop">id</span>: <span class="num">1</span> },
+})
+console.<span class="fn">log</span>(<span class="var">deleted</span>.<span class="prop">name</span>)  <span class="cm">// deleted record return කරනවා</span>
+
+<span class="cm">// ② Multiple records delete</span>
+<span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">deleteMany</span>({
+  <span class="prop">where</span>: {
+    <span class="prop">published</span>: <span class="bool">false</span>,
+    <span class="prop">createdAt</span>: {
+      <span class="prop">lt</span>: <span class="kw">new</span> <span class="fn">Date</span>(<span class="str">'2023-01-01'</span>)  <span class="cm">// 2023 before draft posts delete</span>
+    }
+  }
+})
+
+<span class="cm">// ③ All records delete (DANGER!)</span>
+<span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">deleteMany</span>()   <span class="cm">// All posts delete</span></pre>
+  </div>
+
+  <div class="warn-box">
+    <p>⚠️ <strong>deleteMany()</strong> without <code class="inline">where</code> clause use කිරීමෙන් Table-ලදී ඇති සියළු records delete වෙනවා! Production-ලදී ඉතා careful විය යුතුය.</p>
+  </div>
+</div>
+
+<!-- ==================== RELATIONS ==================== -->
+<div class="section" id="relations">
+  <div class="section-header">
+    <div class="section-title"><div class="icon">🔗</div> Relations (සම්බන්ධතා)</div>
+    <p class="section-desc">Database tables/models ඒ අතර connections define කිරීම — One-to-One, One-to-Many, Many-to-Many.</p>
+  </div>
+
+  <h2 class="sub"><span>01.</span> One-to-Many (1:N)</h2>
+
+  <p class="si">Example: User-ට Posts many ඉන්නවා. (1 User → Many Posts)</p>
+
+  <div class="relation-diagram">
+    <div class="rel-box">
+      <div class="rel-box-title">User</div>
+      <div class="rel-box-fields">
+        id: Int<br>
+        name: String<br>
+        email: String<br>
+        <span style="color:var(--accent2)">posts: Post[]</span>
+      </div>
+    </div>
+    <div class="rel-arrow">
+      <div class="rel-arrow-line"></div>
+      <div class="rel-type">1 : Many</div>
+    </div>
+    <div class="rel-box">
+      <div class="rel-box-title">Post</div>
+      <div class="rel-box-fields">
+        id: Int<br>
+        title: String<br>
+        <span style="color:var(--orange)">authorId: Int</span><br>
+        <span style="color:var(--accent2)">author: User</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>One-to-Many Schema</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="kw">model</span> <span class="type">User</span> {
+  <span class="prop">id</span>    <span class="type">Int</span>    <span class="at">@id</span> <span class="at">@default</span>(<span class="fn">autoincrement</span>())
+  <span class="prop">name</span>  <span class="type">String</span>
+  <span class="prop">posts</span> <span class="type">Post</span>[]  <span class="cm">// [] = "many" side</span>
+}
+
+<span class="kw">model</span> <span class="type">Post</span> {
+  <span class="prop">id</span>       <span class="type">Int</span>    <span class="at">@id</span> <span class="at">@default</span>(<span class="fn">autoincrement</span>())
+  <span class="prop">title</span>    <span class="type">String</span>
+  <span class="prop">authorId</span> <span class="type">Int</span>             <span class="cm">// Foreign Key</span>
+  <span class="prop">author</span>   <span class="type">User</span>   <span class="at">@relation</span>(<span class="prop">fields</span>: [<span class="prop">authorId</span>], <span class="prop">references</span>: [<span class="prop">id</span>])
+}</pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>One-to-Many Queries</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="cm">// User-ලදී Post create කිරීම</span>
+<span class="kw">const</span> <span class="var">post</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">create</span>({
+  <span class="prop">data</span>: {
+    <span class="prop">title</span>: <span class="str">'My New Post'</span>,
+    <span class="prop">content</span>: <span class="str">'Content...'</span>,
+    <span class="prop">slug</span>: <span class="str">'my-new-post'</span>,
+    <span class="prop">author</span>: {
+      <span class="prop">connect</span>: { <span class="prop">id</span>: <span class="num">1</span> }  <span class="cm">// Existing user connect</span>
+    }
+  }
+})
+
+<span class="cm">// User-ලදී ඔක්කොම Posts include</span>
+<span class="kw">const</span> <span class="var">user</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">findUnique</span>({
+  <span class="prop">where</span>: { <span class="prop">id</span>: <span class="num">1</span> },
+  <span class="prop">include</span>: {
+    <span class="prop">posts</span>: {
+      <span class="prop">orderBy</span>: { <span class="prop">createdAt</span>: <span class="str">'desc'</span> }
+    }
+  }
+})
+<span class="cm">// user.posts → Post[] array</span>
+
+<span class="cm">// Post-ලදී Author include</span>
+<span class="kw">const</span> <span class="var">postWithAuthor</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">findUnique</span>({
+  <span class="prop">where</span>: { <span class="prop">id</span>: <span class="num">1</span> },
+  <span class="prop">include</span>: { <span class="prop">author</span>: <span class="bool">true</span> }
+})
+<span class="cm">// postWithAuthor.author.name → 'Kasun Perera'</span></pre>
+  </div>
+
+  <h2 class="sub"><span>02.</span> One-to-One (1:1)</h2>
+
+  <p class="si">Example: User-ට profile one (1 User → 1 Profile)</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>One-to-One Schema</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="kw">model</span> <span class="type">User</span> {
+  <span class="prop">id</span>      <span class="type">Int</span>      <span class="at">@id</span> <span class="at">@default</span>(<span class="fn">autoincrement</span>())
+  <span class="prop">email</span>   <span class="type">String</span>   <span class="at">@unique</span>
+  <span class="prop">profile</span> <span class="type">Profile</span><span class="op">?</span> <span class="cm">// Optional 1-to-1</span>
+}
+
+<span class="kw">model</span> <span class="type">Profile</span> {
+  <span class="prop">id</span>      <span class="type">Int</span>    <span class="at">@id</span> <span class="at">@default</span>(<span class="fn">autoincrement</span>())
+  <span class="prop">bio</span>     <span class="type">String</span><span class="op">?</span>
+  <span class="prop">website</span> <span class="type">String</span><span class="op">?</span>
+  <span class="prop">userId</span>  <span class="type">Int</span>    <span class="at">@unique</span>   <span class="cm">// @unique → 1:1 enforce</span>
+  <span class="prop">user</span>    <span class="type">User</span>   <span class="at">@relation</span>(<span class="prop">fields</span>: [<span class="prop">userId</span>], <span class="prop">references</span>: [<span class="prop">id</span>])
+}</pre>
+  </div>
+
+  <h2 class="sub"><span>03.</span> Many-to-Many (M:N)</h2>
+
+  <p class="si">Example: Post-ලදී Categories many ඉන්නවා, Category-ලදී Posts many ඉන්නවා. (Post ↔ Category)</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Many-to-Many Schema (Implicit)</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="kw">model</span> <span class="type">Post</span> {
+  <span class="prop">id</span>         <span class="type">Int</span>        <span class="at">@id</span> <span class="at">@default</span>(<span class="fn">autoincrement</span>())
+  <span class="prop">title</span>      <span class="type">String</span>
+  <span class="prop">categories</span> <span class="type">Category</span>[] <span class="cm">// Many categories</span>
+}
+
+<span class="kw">model</span> <span class="type">Category</span> {
+  <span class="prop">id</span>    <span class="type">Int</span>    <span class="at">@id</span> <span class="at">@default</span>(<span class="fn">autoincrement</span>())
+  <span class="prop">name</span>  <span class="type">String</span> <span class="at">@unique</span>
+  <span class="prop">posts</span> <span class="type">Post</span>[] <span class="cm">// Many posts</span>
+}
+<span class="cm">// Prisma automatically junction table create කරනවා!</span></pre>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Many-to-Many Queries</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="cm">// Post-ලදී categories assign</span>
+<span class="kw">const</span> <span class="var">post</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">update</span>({
+  <span class="prop">where</span>: { <span class="prop">id</span>: <span class="num">1</span> },
+  <span class="prop">data</span>: {
+    <span class="prop">categories</span>: {
+      <span class="prop">connect</span>: [            <span class="cm">// Multiple categories connect</span>
+        { <span class="prop">id</span>: <span class="num">1</span> },
+        { <span class="prop">id</span>: <span class="num">3</span> },
+        { <span class="prop">name</span>: <span class="str">'Tech'</span> }
+      ]
+    }
+  },
+  <span class="prop">include</span>: { <span class="prop">categories</span>: <span class="bool">true</span> }
+})
+
+<span class="cm">// Category disconnect</span>
+<span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">update</span>({
+  <span class="prop">where</span>: { <span class="prop">id</span>: <span class="num">1</span> },
+  <span class="prop">data</span>: {
+    <span class="prop">categories</span>: {
+      <span class="prop">disconnect</span>: { <span class="prop">id</span>: <span class="num">3</span> }
+    }
+  }
+})
+
+<span class="cm">// Category-ලදී ඇති posts find</span>
+<span class="kw">const</span> <span class="var">techPosts</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">findMany</span>({
+  <span class="prop">where</span>: {
+    <span class="prop">categories</span>: {
+      <span class="prop">some</span>: { <span class="prop">name</span>: <span class="str">'Tech'</span> }  <span class="cm">// 'Tech' category ඇති posts</span>
+    }
+  },
+  <span class="prop">include</span>: { <span class="prop">categories</span>: <span class="bool">true</span> }
+})</pre>
+  </div>
+</div>
+
+<!-- ==================== ADVANCED ==================== -->
+<div class="section" id="advanced">
+  <div class="section-header">
+    <div class="section-title"><div class="icon">🚀</div> Advanced Queries</div>
+    <p class="section-desc">Filtering, Sorting, Pagination, Aggregations, Transactions, Raw SQL.</p>
+  </div>
+
+  <h2 class="sub"><span>01.</span> Filtering (where operators)</h2>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Advanced Where Conditions</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="cm">// ① Comparison operators</span>
+<span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">findMany</span>({
+  <span class="prop">where</span>: {
+    <span class="prop">views</span>: { <span class="prop">gt</span>: <span class="num">100</span> },        <span class="cm">// > 100</span>
+    <span class="prop">views</span>: { <span class="prop">gte</span>: <span class="num">100</span> },       <span class="cm">// >= 100</span>
+    <span class="prop">views</span>: { <span class="prop">lt</span>: <span class="num">1000</span> },       <span class="cm">// < 1000</span>
+    <span class="prop">views</span>: { <span class="prop">lte</span>: <span class="num">1000</span> },      <span class="cm">// <= 1000</span>
+    <span class="prop">views</span>: { <span class="prop">not</span>: <span class="num">0</span> },         <span class="cm">// != 0</span>
+    <span class="prop">views</span>: { <span class="prop">in</span>: [<span class="num">5</span>, <span class="num">10</span>, <span class="num">15</span>] }, <span class="cm">// IN list</span>
+    <span class="prop">views</span>: { <span class="prop">notIn</span>: [<span class="num">0</span>] },     <span class="cm">// NOT IN</span>
+  }
+})
+
+<span class="cm">// ② String operators</span>
+<span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">findMany</span>({
+  <span class="prop">where</span>: {
+    <span class="prop">title</span>: { <span class="prop">contains</span>: <span class="str">'Prisma'</span> },           <span class="cm">// LIKE '%Prisma%'</span>
+    <span class="prop">title</span>: { <span class="prop">startsWith</span>: <span class="str">'How'</span> },            <span class="cm">// LIKE 'How%'</span>
+    <span class="prop">title</span>: { <span class="prop">endsWith</span>: <span class="str">'Guide'</span> },           <span class="cm">// LIKE '%Guide'</span>
+    <span class="prop">email</span>: { <span class="prop">contains</span>: <span class="str">'gmail'</span>, <span class="prop">mode</span>: <span class="str">'insensitive'</span> }, <span class="cm">// Case-insensitive</span>
+  }
+})
+
+<span class="cm">// ③ AND / OR / NOT</span>
+<span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">findMany</span>({
+  <span class="prop">where</span>: {
+    <span class="prop">AND</span>: [
+      { <span class="prop">published</span>: <span class="bool">true</span> },
+      { <span class="prop">views</span>: { <span class="prop">gt</span>: <span class="num">100</span> } }
+    ]
+  }
+})
+
+<span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">findMany</span>({
+  <span class="prop">where</span>: {
+    <span class="prop">OR</span>: [
+      { <span class="prop">role</span>: <span class="str">'ADMIN'</span> },
+      { <span class="prop">role</span>: <span class="str">'MODERATOR'</span> }
+    ]
+  }
+})</pre>
+  </div>
+
+  <h2 class="sub"><span>02.</span> Sorting & Pagination</h2>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Sorting & Pagination</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="cm">// ① Multiple field sorting</span>
+<span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">findMany</span>({
+  <span class="prop">orderBy</span>: [
+    { <span class="prop">views</span>: <span class="str">'desc'</span> },      <span class="cm">// Views highest first</span>
+    { <span class="prop">createdAt</span>: <span class="str">'desc'</span> }, <span class="cm">// Then newest first</span>
+  ]
+})
+
+<span class="cm">// ② Offset Pagination (Page-based)</span>
+<span class="kw">const</span> <span class="var">page</span> <span class="op">=</span> <span class="num">2</span>          <span class="cm">// Page number</span>
+<span class="kw">const</span> <span class="var">pageSize</span> <span class="op">=</span> <span class="num">10</span>    <span class="cm">// Per page</span>
+
+<span class="kw">const</span> <span class="var">posts</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">findMany</span>({
+  <span class="prop">skip</span>: (<span class="var">page</span> <span class="op">-</span> <span class="num">1</span>) <span class="op">*</span> <span class="var">pageSize</span>,  <span class="cm">// Page 2 = skip 10</span>
+  <span class="prop">take</span>: <span class="var">pageSize</span>,               <span class="cm">// Take 10</span>
+  <span class="prop">orderBy</span>: { <span class="prop">createdAt</span>: <span class="str">'desc'</span> },
+})
+
+<span class="kw">const</span> <span class="var">total</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">count</span>()
+<span class="kw">const</span> <span class="var">totalPages</span> <span class="op">=</span> <span class="type">Math</span>.<span class="fn">ceil</span>(<span class="var">total</span> <span class="op">/</span> <span class="var">pageSize</span>)
+
+<span class="cm">// ③ Cursor Pagination (Infinite scroll-ලදී use)</span>
+<span class="kw">const</span> <span class="var">nextPosts</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">findMany</span>({
+  <span class="prop">take</span>: <span class="num">10</span>,
+  <span class="prop">skip</span>: <span class="num">1</span>,             <span class="cm">// Cursor record skip</span>
+  <span class="prop">cursor</span>: { <span class="prop">id</span>: <span class="num">25</span> },  <span class="cm">// Last seen ID from (after id=25)</span>
+  <span class="prop">orderBy</span>: { <span class="prop">id</span>: <span class="str">'asc'</span> },
+})</pre>
+  </div>
+
+  <h2 class="sub"><span>03.</span> Aggregations</h2>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Aggregation Queries</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="cm">// Aggregate — SUM, AVG, MAX, MIN, COUNT</span>
+<span class="kw">const</span> <span class="var">stats</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">aggregate</span>({
+  <span class="prop">_count</span>: { <span class="prop">id</span>: <span class="bool">true</span> },       <span class="cm">// Total posts count</span>
+  <span class="prop">_sum</span>: { <span class="prop">views</span>: <span class="bool">true</span> },       <span class="cm">// Total views</span>
+  <span class="prop">_avg</span>: { <span class="prop">views</span>: <span class="bool">true</span> },       <span class="cm">// Average views</span>
+  <span class="prop">_max</span>: { <span class="prop">views</span>: <span class="bool">true</span> },       <span class="cm">// Most viewed</span>
+  <span class="prop">_min</span>: { <span class="prop">views</span>: <span class="bool">true</span> },       <span class="cm">// Least viewed</span>
+  <span class="prop">where</span>: { <span class="prop">published</span>: <span class="bool">true</span> },   <span class="cm">// Published posts only</span>
+})
+
+console.<span class="fn">log</span>(<span class="var">stats</span>.<span class="prop">_count</span>.<span class="prop">id</span>)   <span class="cm">// → 47</span>
+console.<span class="fn">log</span>(<span class="var">stats</span>.<span class="prop">_avg</span>.<span class="prop">views</span>)  <span class="cm">// → 324.5</span>
+
+<span class="cm">// Group by — Author by post count</span>
+<span class="kw">const</span> <span class="var">postsByAuthor</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">groupBy</span>({
+  <span class="prop">by</span>: [<span class="str">'authorId'</span>],
+  <span class="prop">_count</span>: { <span class="prop">id</span>: <span class="bool">true</span> },
+  <span class="prop">_sum</span>: { <span class="prop">views</span>: <span class="bool">true</span> },
+  <span class="prop">having</span>: {
+    <span class="prop">id</span>: { <span class="prop">_count</span>: { <span class="prop">gt</span>: <span class="num">5</span> } }  <span class="cm">// 5 posts ඉහළ authors only</span>
+  },
+  <span class="prop">orderBy</span>: {
+    <span class="prop">_count</span>: { <span class="prop">id</span>: <span class="str">'desc'</span> }
+  }
+})</pre>
+  </div>
+
+  <h2 class="sub"><span>04.</span> Transactions</h2>
+
+  <p class="si">Multiple operations atomically perform කිරීම — ගෙවීම් සිදු කිරීම (Balance deduct + Payment record create) ආදී critical operations-ලදී use කරනවා.</p>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Transactions</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="cm">// ① Sequential transaction — $transaction array</span>
+<span class="kw">const</span> [<span class="var">newUser</span>, <span class="var">newPost</span>] <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">$transaction</span>([
+  <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">create</span>({
+    <span class="prop">data</span>: { <span class="prop">email</span>: <span class="str">'new@example.com'</span>, <span class="prop">name</span>: <span class="str">'New User'</span>, <span class="prop">password</span>: <span class="str">'pw'</span> }
+  }),
+  <span class="var">prisma</span>.<span class="fn">post</span>.<span class="fn">create</span>({
+    <span class="prop">data</span>: { <span class="prop">title</span>: <span class="str">'Welcome Post'</span>, <span class="prop">slug</span>: <span class="str">'welcome'</span>, <span class="prop">content</span>: <span class="str">'Hello!'</span>, <span class="prop">authorId</span>: <span class="num">1</span> }
+  }),
+])
+<span class="cm">// ① fail නම් ② ද rollback</span>
+
+<span class="cm">// ② Interactive transaction — complex logic</span>
+<span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">$transaction</span>(<span class="kw">async</span> (<span class="var">tx</span>) <span class="op">=></span> {
+  <span class="cm">// User balance check</span>
+  <span class="kw">const</span> <span class="var">sender</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">tx</span>.<span class="fn">account</span>.<span class="fn">findUnique</span>({
+    <span class="prop">where</span>: { <span class="prop">id</span>: <span class="num">1</span> }
+  })
+
+  <span class="kw">if</span> (<span class="var">sender</span>.<span class="prop">balance</span> <span class="op">&lt;</span> <span class="num">1000</span>) {
+    <span class="kw">throw new</span> <span class="fn">Error</span>(<span class="str">'Insufficient balance!'</span>) <span class="cm">// → Rollback</span>
+  }
+
+  <span class="cm">// Deduct sender</span>
+  <span class="kw">await</span> <span class="var">tx</span>.<span class="fn">account</span>.<span class="fn">update</span>({
+    <span class="prop">where</span>: { <span class="prop">id</span>: <span class="num">1</span> },
+    <span class="prop">data</span>: { <span class="prop">balance</span>: { <span class="prop">decrement</span>: <span class="num">1000</span> } }
+  })
+
+  <span class="cm">// Add to receiver</span>
+  <span class="kw">await</span> <span class="var">tx</span>.<span class="fn">account</span>.<span class="fn">update</span>({
+    <span class="prop">where</span>: { <span class="prop">id</span>: <span class="num">2</span> },
+    <span class="prop">data</span>: { <span class="prop">balance</span>: { <span class="prop">increment</span>: <span class="num">1000</span> } }
+  })
+})  <span class="cm">// Error නම් automatically rollback</span></pre>
+  </div>
+
+  <h2 class="sub"><span>05.</span> Raw SQL</h2>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Raw SQL Queries</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="cm">// Complex queries-ලදී raw SQL use</span>
+
+<span class="cm">// ① Query (SELECT)</span>
+<span class="kw">const</span> <span class="var">result</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">$queryRaw</span><span class="op">`</span>
+  <span class="str">SELECT u.name, COUNT(p.id) as post_count
+  FROM "User" u
+  LEFT JOIN "Post" p ON u.id = p."authorId"
+  GROUP BY u.id, u.name
+  ORDER BY post_count DESC</span>
+<span class="op">`</span>
+
+<span class="cm">// ② Execute (INSERT/UPDATE/DELETE)</span>
+<span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">$executeRaw</span><span class="op">`</span>
+  <span class="str">UPDATE "Post" SET views = views + 1 WHERE id = ${<span class="var">postId</span>}</span>
+<span class="op">`</span>
+<span class="cm">// Template literals use → SQL injection prevent!</span></pre>
+  </div>
+</div>
+
+<!-- ==================== ERRORS ==================== -->
+<div class="section" id="errors">
+  <div class="section-header">
+    <div class="section-title"><div class="icon">🛡️</div> Error Handling</div>
+    <p class="section-desc">Prisma errors catch කිරීම සහ user-friendly messages return කිරීම.</p>
+  </div>
+
+  <h2 class="sub"><span>01.</span> Prisma Error Types</h2>
+
+  <table class="comparison-table">
+    <thead>
+      <tr><th>Error Type</th><th>Code</th><th>When Occurs?</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>PrismaClientKnownRequestError</td><td>P2002</td><td>Unique constraint violation</td></tr>
+      <tr><td>PrismaClientKnownRequestError</td><td>P2025</td><td>Record not found</td></tr>
+      <tr><td>PrismaClientKnownRequestError</td><td>P2003</td><td>Foreign key constraint violation</td></tr>
+      <tr><td>PrismaClientValidationError</td><td>—</td><td>Invalid input data</td></tr>
+      <tr><td>PrismaClientInitializationError</td><td>—</td><td>DB connection fail</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Error Handling Pattern</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="kw">import</span> { <span class="type">Prisma</span> } <span class="kw">from</span> <span class="str">'@prisma/client'</span>
+<span class="kw">import</span> { <span class="var">prisma</span> } <span class="kw">from</span> <span class="str">'./lib/prisma'</span>
+
+<span class="kw">async function</span> <span class="fn">createUser</span>(<span class="var">email</span>: <span class="type">string</span>, <span class="var">name</span>: <span class="type">string</span>) {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> <span class="var">user</span> <span class="op">=</span> <span class="kw">await</span> <span class="var">prisma</span>.<span class="fn">user</span>.<span class="fn">create</span>({
+      <span class="prop">data</span>: { <span class="var">email</span>, <span class="var">name</span>, <span class="prop">password</span>: <span class="str">'default'</span> }
+    })
+    <span class="kw">return</span> { <span class="prop">success</span>: <span class="bool">true</span>, <span class="var">user</span> }
+
+  } <span class="kw">catch</span> (<span class="var">error</span>) {
+
+    <span class="kw">if</span> (<span class="var">error</span> <span class="kw">instanceof</span> <span class="type">Prisma</span>.<span class="type">PrismaClientKnownRequestError</span>) {
+      <span class="kw">switch</span> (<span class="var">error</span>.<span class="prop">code</span>) {
+        <span class="kw">case</span> <span class="str">'P2002'</span>:
+          <span class="cm">// Unique constraint — Email already exists</span>
+          <span class="kw">return</span> {
+            <span class="prop">success</span>: <span class="bool">false</span>,
+            <span class="prop">error</span>: <span class="str">'මෙම email address දැනටමත් registered. වෙනත් email use කරන්න.'</span>
+          }
+
+        <span class="kw">case</span> <span class="str">'P2025'</span>:
+          <span class="cm">// Record not found</span>
+          <span class="kw">return</span> {
+            <span class="prop">success</span>: <span class="bool">false</span>,
+            <span class="prop">error</span>: <span class="str">'Record not found.'</span>
+          }
+
+        <span class="kw">case</span> <span class="str">'P2003'</span>:
+          <span class="cm">// Foreign key violation</span>
+          <span class="kw">return</span> {
+            <span class="prop">success</span>: <span class="bool">false</span>,
+            <span class="prop">error</span>: <span class="str">'Related record does not exist.'</span>
+          }
+      }
+    }
+
+    <span class="kw">if</span> (<span class="var">error</span> <span class="kw">instanceof</span> <span class="type">Prisma</span>.<span class="type">PrismaClientValidationError</span>) {
+      <span class="kw">return</span> {
+        <span class="prop">success</span>: <span class="bool">false</span>,
+        <span class="prop">error</span>: <span class="str">'Invalid data provided.'</span>
+      }
+    }
+
+    <span class="cm">// Unknown error</span>
+    console.<span class="fn">error</span>(<span class="str">'Unexpected error:'</span>, <span class="var">error</span>)
+    <span class="kw">return</span> { <span class="prop">success</span>: <span class="bool">false</span>, <span class="prop">error</span>: <span class="str">'Server error occurred.'</span> }
+  }
+}</pre>
+  </div>
+</div>
+
+<!-- ==================== TIPS ==================== -->
+<div class="section" id="tips">
+  <div class="section-header">
+    <div class="section-title"><div class="icon">💡</div> Best Practices</div>
+    <p class="section-desc">Professional projects-ලදී follow කළ යුතු important patterns.</p>
+  </div>
+
+  <div class="card" style="margin-bottom:20px;">
+    <div class="verdict-row">
+      <div class="verdict-icon">✅</div>
+      <div class="verdict-text"><strong>Singleton Pattern Use කරන්න</strong> — Development-ලදී hot reload time PrismaClient multiple instances create වෙනවා. <code class="inline">globalThis.prisma</code> pattern use කිරීමෙන් prevent කළ හැකිය.</div>
+    </div>
+    <div class="verdict-row">
+      <div class="verdict-icon">✅</div>
+      <div class="verdict-text"><strong>Select Fields Explicitly</strong> — Password, secret tokens include නොකරන්නට <code class="inline">select</code> use කරන්න. Default-ලදී all fields return වෙනවා — security risk!</div>
+    </div>
+    <div class="verdict-row">
+      <div class="verdict-icon">✅</div>
+      <div class="verdict-text"><strong>Pagination Always</strong> — <code class="inline">findMany()</code> ලිවීමේදී <code class="inline">take</code> limit add කරන්නම. නැත්නම් ලක්ෂ records එකවර load වේ.</div>
+    </div>
+    <div class="verdict-row">
+      <div class="verdict-icon">✅</div>
+      <div class="verdict-text"><strong>$disconnect() Call</strong> — Scripts/Lambda functions-ලදී <code class="inline">prisma.$disconnect()</code> finally block-ලදී call කරන්න. Connection leaks prevent කරයි.</div>
+    </div>
+    <div class="verdict-row">
+      <div class="verdict-icon">✅</div>
+      <div class="verdict-text"><strong>Index Add කරන්න</strong> — Frequently filtered fields-ලදී <code class="inline">@@index([email, createdAt])</code> schema-ලදී add කිරීමෙන් query speed improve වෙනවා.</div>
+    </div>
+    <div class="verdict-row">
+      <div class="verdict-icon">✅</div>
+      <div class="verdict-text"><strong>Transactions Use</strong> — Multiple related operations (payment, inventory update, etc.) transactions-ලදී wrap කරන්න. Error නම් all rollback.</div>
+    </div>
+    <div class="verdict-row">
+      <div class="verdict-icon">❌</div>
+      <div class="verdict-text"><strong>N+1 Problem Avoid</strong> — Loop-ලදී per-item database query NEVER කරන්නේ. <code class="inline">include</code> use කිරීමෙන් single query-ලදී related data fetch කරන්න.</div>
+    </div>
+    <div class="verdict-row">
+      <div class="verdict-icon">❌</div>
+      <div class="verdict-text"><strong>Raw SQL Over-Use Avoid</strong> — Complex analytics queries-ලදී <code class="inline">$queryRaw</code> use කළ හැකිය, නමුත් normal operations-ලදී Prisma API-ම use කරන්න.</div>
+    </div>
+  </div>
+
+  <h2 class="sub"><span>02.</span> Indexes Schema Example</h2>
+
+  <div class="code-block">
+    <div class="code-header">
+      <div class="code-label"><div class="code-dot dot-red"></div><div class="code-dot dot-yellow"></div><div class="code-dot dot-green"></div>Performance — Indexes</div>
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    </div>
+    <pre><span class="kw">model</span> <span class="type">Post</span> {
+  <span class="prop">id</span>          <span class="type">Int</span>      <span class="at">@id</span> <span class="at">@default</span>(<span class="fn">autoincrement</span>())
+  <span class="prop">title</span>       <span class="type">String</span>
+  <span class="prop">published</span>   <span class="type">Boolean</span>
+  <span class="prop">authorId</span>    <span class="type">Int</span>
+  <span class="prop">createdAt</span>   <span class="type">DateTime</span> <span class="at">@default</span>(<span class="fn">now</span>())
+
+  <span class="cm">// Single field index</span>
+  <span class="at">@@index</span>([<span class="prop">authorId</span>])
+
+  <span class="cm">// Compound index — commonly filtered together</span>
+  <span class="at">@@index</span>([<span class="prop">published</span>, <span class="prop">createdAt</span>])
+
+  <span class="cm">// Fulltext search index (MySQL/PostgreSQL)</span>
+  <span class="at">@@fulltext</span>([<span class="prop">title</span>, <span class="prop">content</span>])
+}</pre>
+  </div>
+
+  <h2 class="sub"><span>03.</span> Quick Reference</h2>
+
+  <table class="comparison-table">
+    <thead>
+      <tr><th>Operation</th><th>Method</th><th>Returns</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Single create</td><td><code class="inline">prisma.model.create()</code></td><td>Created record</td></tr>
+      <tr><td>Bulk create</td><td><code class="inline">prisma.model.createMany()</code></td><td>Count</td></tr>
+      <tr><td>Find by unique</td><td><code class="inline">prisma.model.findUnique()</code></td><td>Record | null</td></tr>
+      <tr><td>Find first match</td><td><code class="inline">prisma.model.findFirst()</code></td><td>Record | null</td></tr>
+      <tr><td>Find all</td><td><code class="inline">prisma.model.findMany()</code></td><td>Array</td></tr>
+      <tr><td>Update single</td><td><code class="inline">prisma.model.update()</code></td><td>Updated record</td></tr>
+      <tr><td>Update multiple</td><td><code class="inline">prisma.model.updateMany()</code></td><td>Count</td></tr>
+      <tr><td>Create or update</td><td><code class="inline">prisma.model.upsert()</code></td><td>Record</td></tr>
+      <tr><td>Delete single</td><td><code class="inline">prisma.model.delete()</code></td><td>Deleted record</td></tr>
+      <tr><td>Delete multiple</td><td><code class="inline">prisma.model.deleteMany()</code></td><td>Count</td></tr>
+      <tr><td>Count</td><td><code class="inline">prisma.model.count()</code></td><td>Number</td></tr>
+      <tr><td>Aggregate</td><td><code class="inline">prisma.model.aggregate()</code></td><td>Aggregate result</td></tr>
+    </tbody>
+  </table>
+
+  <div class="success-box">
+    <p>🎉 ඔබ Prisma ORM ගැන සම්පූර්ණ knowledge ලබා ගත්තා! Schema define කිරීමෙන් ආරම්භ කර, CRUD operations, Relations, Advanced Queries, Error Handling දක්වා ඔබ ඉගෙනුම් ගත්තා. දැන් ඔබේ Next.js / Express project-ලදී Prisma apply කරන්න!</p>
+  </div>
+</div>
+
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function copyCode(btn) {
+  const pre = btn.closest('.code-block').querySelector('pre');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.style.color = '#4ade80';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>
